@@ -1,0 +1,213 @@
+/*
+ * Stylesheet for the Purple Fish Facts website
+ *
+ * The palette is built around rich purples with lighter accent tones to
+ * reinforce the site’s theme. Layout is responsive and uses CSS Grid to
+ * organise fact cards. Card hover effects and subtle shadows provide
+ * depth without overwhelming the content. Feel free to tweak the colour
+ * variables at the top of this file to adjust the look and feel.
+ */
+
+:root {
+  --primary: #4b1f78;   /* deep purple for headers and nav bars */
+  --secondary: #6a3fa0; /* medium purple for hover states and accents */
+  --accent: #cda1ff;    /* light purple for highlights and buttons */
+  --background: #f8f5ff; /* very pale purple background */
+}
+
+/* Basic resets */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--background);
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Hero section styles */
+.hero {
+  position: relative;
+  height: 60vh;
+  overflow: hidden;
+}
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.65);
+}
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+}
+.hero-text h1 {
+  font-size: 3.5rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: 1px;
+}
+.hero-text p {
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+  max-width: 500px;
+}
+.cta-button {
+  display: inline-block;
+  background-color: var(--accent);
+  color: var(--primary);
+  padding: 0.8rem 1.6rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+.cta-button:hover {
+  background-color: var(--secondary);
+  color: #fff;
+}
+
+/* Navigation bar */
+.main-nav {
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+}
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.main-nav li {
+  margin: 0;
+}
+.main-nav a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.main-nav a:hover {
+  background-color: var(--secondary);
+}
+
+/* Section styling */
+.intro, .facts, .sources {
+  padding: 4rem 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.intro h2, .facts h2, .sources h2 {
+  color: var(--primary);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.intro p {
+  font-size: 1.1rem;
+  margin: 0 auto;
+  max-width: 800px;
+  text-align: center;
+}
+
+/* Fact cards */
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.fact-card {
+  background-color: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.fact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+.fact-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
+  font-size: 1.3rem;
+}
+.fact-card p {
+  margin: 0;
+  font-size: 1rem;
+}
+.fact-card sup a {
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.7rem;
+  vertical-align: super;
+}
+.fact-card sup a:hover {
+  text-decoration: underline;
+}
+
+/* Sources list */
+.sources ol {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+}
+.sources li {
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+.sources a {
+  color: var(--primary);
+  text-decoration: none;
+}
+.sources a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  background-color: var(--primary);
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .hero {
+    height: 50vh;
+  }
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+  .hero-text p {
+    font-size: 1rem;
+  }
+  .cta-button {
+    padding: 0.6rem 1.2rem;
+  }
+  .intro, .facts, .sources {
+    padding: 3rem 1rem;
+  }
+  .intro h2, .facts h2, .sources h2 {
+    font-size: 2rem;
+  }
+}
