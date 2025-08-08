@@ -1,236 +1,483 @@
 <!DOCTYPE html>
+  
 <html lang="en">
+  
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Purple Fish Facts</title>
-  <!-- Import a clean, modern typeface from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Link to the site‑wide stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  
+  <meta charset="UTF-8" />
+  
+  <title>AI Hand Drawing App</title>
+  
+  <style>
+  
+    body {
+  
+      margin: 0;
+  
+      background: #111;
+  
+      display: flex;
+  
+      justify-content: center;
+  
+      align-items: center;
+  
+      height: 100vh;
+  
+    }
+  
+    .wrapper {
+  
+      position: relative;
+  
+      width: 900px;
+  
+      height: 675px;
+  
+    }
+  
+    video, canvas {
+  
+      position: absolute;
+  
+      top: 0;
+  
+      left: 0;
+  
+      width: 900px;
+  
+      height: 675px;
+  
+      border-radius: 12px;
+  
+      transform: scaleX(-1);
+  
+    }
+  
+    .toolbar {
+  
+      position: absolute;
+  
+      top: 10px;
+  
+      left: 50%;
+  
+      transform: translateX(-50%);
+  
+      display: flex;
+  
+      gap: 8px;
+  
+      z-index: 10;
+  
+      pointer-events: none;
+  
+    }
+  
+    .tool {
+  
+      background: rgba(255,255,255,0.15);
+  
+      color: white;
+  
+      padding: 7px 12px;
+  
+      font-family: sans-serif;
+  
+      font-size: 14px;
+  
+      border-radius: 5px;
+  
+      pointer-events: none;
+  
+    }
+  
+    .active {
+  
+      background: rgba(0, 255, 0, 0.7);
+  
+    }
+  
+    .slider-container {
+  
+      position: absolute;
+  
+      bottom: 15px;
+  
+      left: 50%;
+  
+      transform: translateX(-50%);
+  
+      z-index: 10;
+  
+      color: white;
+  
+      font-family: sans-serif;
+  
+      display: flex;
+  
+      align-items: center;
+  
+      gap: 10px;
+  
+    }
+  
+    .color-dot {
+  
+      width: 18px;
+  
+      height: 18px;
+  
+      border-radius: 50%;
+  
+      border: 2px solid white;
+  
+    }
+  
+    .save-btn {
+  
+      background: #222;
+  
+      color: white;
+  
+      padding: 6px 12px;
+  
+      border: none;
+  
+      border-radius: 6px;
+  
+      cursor: pointer;
+  
+      font-family: sans-serif;
+  
+      font-size: 14px;
+  
+    }
+  
+  </style>
+  
 </head>
+  
 <body>
-  <header>
-    <!-- Hero section with decorative background image and introductory copy -->
-    <div class="hero">
-      <img src="hero.png" alt="Purple underwater scene with fish silhouettes" loading="lazy">
-      <div class="hero-text">
-        <h1>Purple Fish Facts</h1>
-        <p>Explore a sea of knowledge about some of the most fascinating animals on Earth.</p>
-        <a href="#facts" class="cta-button">Dive In</a>
-      </div>
+  
+  <div class="wrapper">
+  
+    <video id="video" autoplay playsinline></video>
+  
+    <canvas id="output"></canvas>
+  
+    <canvas id="drawCanvas"></canvas>
+  
+
+  
+    <div class="toolbar">
+  
+      <div id="pen" class="tool active">Pen</div>
+  
+      <div id="eraser" class="tool">Eraser</div>
+  
+      <div id="color" class="tool">Color</div>
+  
+      <div id="reset" class="tool">Reset</div>
+  
+      <div class="color-dot" id="colorDot"></div>
+  
+      <button class="save-btn" id="saveBtn">ðŸ’¾ Save</button>
+  
     </div>
-    <!-- Main navigation bar -->
-    <nav class="main-nav">
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#facts">Facts</a></li>
-        <li><a href="#sources">Sources</a></li>
-      </ul>
-    </nav>
-  </header>
+  
 
-  <main id="home">
-    <!-- Introductory section explaining the purpose of the site -->
-    <section class="intro">
-      <h2>Welcome</h2>
-      <p>
-        Fish are among the oldest and most diverse vertebrates. They inhabit every type of aquatic
-        environment—from alpine streams to the deepest ocean trenches—and have evolved an
-        astonishing array of adaptations. This site collects some of the most remarkable facts
-        about fish, from record‑breaking giants and minuscule minnows to strange behaviours and
-        survival strategies that defy expectations.
-      </p>
-    </section>
+  
+    <div class="slider-container">
+  
+      Brush Size:
+  
+      <input type="range" min="5" max="50" value="12" id="sizeSlider">
+  
+    </div>
+  
+  </div>
+  
 
-    <!-- Fact cards section: each card contains a short, intriguing fact about fish -->
-    <section id="facts" class="facts">
-      <h2>Interesting Fish Facts</h2>
-      <div class="facts-grid">
-        <!-- Fact 1 -->
-        <div class="fact-card">
-          <h3>Species abundance</h3>
-          <p>
-            Scientists have identified more than <strong>32&nbsp;000</strong> fish species—more than all
-            other vertebrates combined—and new species are discovered every year<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 2 -->
-        <div class="fact-card">
-          <h3>Largest fish</h3>
-          <p>
-            The <em>whale shark</em> holds the record for the world’s largest fish. It grows over 50&nbsp;feet
-            long and weighs several tons. Despite its size, it has more than 4&nbsp;000 teeth—each only
-            3&nbsp;mm long<sup><a href="#source1">[1]</a><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 3 -->
-        <div class="fact-card">
-          <h3>Smallest fish</h3>
-          <p>
-            The world’s smallest fish is the tiny goby of the Philippines. Adults rarely grow longer
-            than half an inch<sup><a href="#source1">[1]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 4 -->
-        <div class="fact-card">
-          <h3>Most common fish</h3>
-          <p>
-            Deepwater fish called <em>bristlemouths</em> are thought to be the most numerous fish in the
-            world. They are about the size of a small minnow and live at depths of around 500&nbsp;metres
-            or more<sup><a href="#source1">[1]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 5 -->
-        <div class="fact-card">
-          <h3>Speed champions</h3>
-          <p>
-            Sailfish are among the fastest fish, able to swim as quickly as a car travelling along a
-            highway<sup><a href="#source2">[2]</a></sup>. Other speedsters such as tuna and certain sharks can
-            sustain 5–10&nbsp;miles per hour in long‑distance swims<sup><a href="#source1">[1]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 6 -->
-        <div class="fact-card">
-          <h3>Dangerous beauty</h3>
-          <p>
-            The <em>stonefish</em> is the most poisonous fish in the world. Its venomous spines can cause
-            shock, paralysis or even death if not treated promptly<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 7 -->
-        <div class="fact-card">
-          <h3>Born alive or from eggs</h3>
-          <p>
-            While most fish reproduce by laying eggs, some species—including the great white shark—give
-            birth to live young called pups<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 8 -->
-        <div class="fact-card">
-          <h3>Land‑dwelling fish</h3>
-          <p>
-            Lungfish can survive out of water for years by secreting a mucus cocoon, burrowing into
-            mud and breathing air with a lung as well as gills<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 9 -->
-        <div class="fact-card">
-          <h3>Longevity</h3>
-          <p>
-            The orange roughy can live for more than 100&nbsp;years, and the Acadian redfish can live past
-            40&nbsp;years<sup><a href="#source1">[1]</a></sup>. Lifespans vary widely among fish.
-          </p>
-        </div>
-        <!-- Fact 10 -->
-        <div class="fact-card">
-          <h3>Breathing underwater</h3>
-          <p>
-            Fish don’t breathe air; they extract dissolved oxygen from water. Their gills contain a
-            network of fine blood vessels that allow oxygen to diffuse into the bloodstream<sup><a href="#source1">[1]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 11 -->
-        <div class="fact-card">
-          <h3>Do fish sleep?</h3>
-          <p>
-            Most fish do not have eyelids. Instead of deep sleep, they enter periods of rest—floating
-            motionless, wedging themselves into crevices or even building nests—while remaining alert
-            for danger<sup><a href="#source1">[1]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 12 -->
-        <div class="fact-card">
-          <h3>Swimming style</h3>
-          <p>
-            Fish swim by contracting bands of muscle on opposite sides of the body. This whips the tail
-            back and forth. Vertical fins provide stability and paired fins help hover or steer. A
-            handful of species, including seahorses and shrimpfish, swim upright<sup><a href="#source1">[1]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 13 -->
-        <div class="fact-card">
-          <h3>No swim bladder</h3>
-          <p>
-            Sharks and rays lack a swim bladder—the gas‑filled organ that helps most bony fish stay
-            buoyant. As a result, they must keep swimming or they will sink<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 14 -->
-        <div class="fact-card">
-          <h3>Underwater voices</h3>
-          <p>
-            Fish communicate using low‑pitched sounds such as grunts, croaks and hisses. They make
-            noises by vibrating muscles against their swim bladder because they lack vocal cords<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 15 -->
-        <div class="fact-card">
-          <h3>School rules</h3>
-          <p>
-            Fish can form schools containing millions of individuals. A special row of pores called the
-            lateral line runs along their sides and senses pressure changes, helping them maintain
-            formation<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 16 -->
-        <div class="fact-card">
-          <h3>Amazing taste buds</h3>
-          <p>
-            Catfish have more than 27&nbsp;000 taste buds spread over their bodies—nearly four times
-            the number humans have<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 17 -->
-        <div class="fact-card">
-          <h3>Walking fish</h3>
-          <p>
-            Mudskippers spend much of their time on land. They “walk” on their fins and carry water
-            in their gill chambers. They can also breathe through the pores of their moist skin<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 18 -->
-        <div class="fact-card">
-          <h3>Piranha origins</h3>
-          <p>
-            The word “piranha” comes from the Tupi term <em>pira&nbsp;nya</em>, meaning “scissors.” These
-            fish have razor‑sharp teeth and feed on fish, insects, seeds, fruit and occasionally
-            carcasses. Despite their reputation, there are no proven reports of piranhas killing
-            people<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 19 -->
-        <div class="fact-card">
-          <h3>Epic migrations</h3>
-          <p>
-            Salmon undertake astonishing journeys. Tagged Chinook salmon in the Yukon River were
-            documented travelling nearly 2&nbsp;000&nbsp;miles in just 60&nbsp;days to return to the river where
-            they were born<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-        <!-- Fact 20 -->
-        <div class="fact-card">
-          <h3>Mysteries below</h3>
-          <p>
-            Humans have explored only about 1&nbsp;% of the ocean depths. Scientists believe millions of
-            species—including countless kinds of fish—remain undiscovered in the deep sea<sup><a href="#source2">[2]</a></sup>.
-          </p>
-        </div>
-      </div>
-    </section>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  
 
-    <!-- Sources section listing references used in the fact cards -->
-    <section id="sources" class="sources">
-      <h2>Sources</h2>
-      <ol>
-        <li id="source1">NOAA Fisheries – “Fun Facts About Fascinating Fish”【768523590216032†L492-L517】【768523590216032†L533-L549】.</li>
-        <li id="source2">FactRetriever – “62 Fun Fish Facts”【293397181720195†L120-L161】【293397181720195†L210-L229】.</li>
-      </ol>
-    </section>
-  </main>
+  
+  <script>
+  
+    const WIDTH = 900, HEIGHT = 675;
+  
+    const video = document.getElementById('video');
+  
+    const outputCanvas = document.getElementById('output');
+  
+    const drawCanvas = document.getElementById('drawCanvas');
+  
+    const outputCtx = outputCanvas.getContext('2d');
+  
+    const drawCtx = drawCanvas.getContext('2d');
+  
 
-  <footer>
-    <p>&copy; 2025 Purple Fish Facts. All rights reserved.</p>
-  </footer>
+  
+    outputCanvas.width = drawCanvas.width = WIDTH;
+  
+    outputCanvas.height = drawCanvas.height = HEIGHT;
+  
+
+  
+    const penBtn = document.getElementById('pen');
+  
+    const eraserBtn = document.getElementById('eraser');
+  
+    const colorBtn = document.getElementById('color');
+  
+    const resetBtn = document.getElementById('reset');
+  
+    const saveBtn = document.getElementById('saveBtn');
+  
+    const colorDot = document.getElementById('colorDot');
+  
+    const sizeSlider = document.getElementById('sizeSlider');
+  
+
+  
+    const tools = [penBtn, eraserBtn, colorBtn, resetBtn];
+  
+    const colors = ['red', 'blue', 'lime', 'yellow', 'white', 'orange', 'cyan'];
+  
+    let currentColor = 'red';
+  
+    let colorIndex = 0;
+  
+    let tool = 'pen';
+  
+    let brushSize = parseInt(sizeSlider.value);
+  
+
+  
+    let lastX = null, lastY = null;
+  
+
+  
+    function activate(btn) {
+  
+      tools.forEach(b => b.classList.remove('active'));
+  
+      btn.classList.add('active');
+  
+    }
+  
+
+  
+    function getAbsolute(x, y) {
+  
+      const rect = outputCanvas.getBoundingClientRect();
+  
+      return { absX: rect.left + (WIDTH - x), absY: rect.top + y };
+  
+    }
+  
+
+  
+    function isHovering(absX, absY, el) {
+  
+      const rect = el.getBoundingClientRect();
+  
+      return absX >= rect.left && absX <= rect.right && absY >= rect.top && absY <= rect.bottom;
+  
+    }
+  
+
+  
+    colorDot.style.background = currentColor;
+  
+
+  
+    sizeSlider.oninput = () => brushSize = parseInt(sizeSlider.value);
+  
+
+  
+    saveBtn.onclick = () => {
+  
+      const link = document.createElement('a');
+  
+      link.download = 'drawing.png';
+  
+      link.href = drawCanvas.toDataURL();
+  
+      link.click();
+  
+    };
+  
+
+  
+    const hands = new Hands({
+  
+      locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+  
+    });
+  
+
+  
+    hands.setOptions({
+  
+      maxNumHands: 1,
+  
+      modelComplexity: 1,
+  
+      minDetectionConfidence: 0.7,
+  
+      minTrackingConfidence: 0.5
+  
+    });
+  
+
+  
+    hands.onResults(results => {
+  
+      outputCtx.clearRect(0, 0, WIDTH, HEIGHT);
+  
+      outputCtx.drawImage(results.image, 0, 0, WIDTH, HEIGHT);
+  
+
+  
+      if (results.multiHandLandmarks.length === 0) {
+  
+        lastX = lastY = null;
+  
+        return;
+  
+      }
+  
+
+  
+      const lm = results.multiHandLandmarks[0];
+  
+      drawConnectors(outputCtx, lm, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 2 });
+  
+      drawLandmarks(outputCtx, lm, { color: '#FF0000', radius: 4 });
+  
+
+  
+      const index = lm[8], thumb = lm[4];
+  
+      const x = index.x * WIDTH, y = index.y * HEIGHT;
+  
+      const tx = thumb.x * WIDTH, ty = thumb.y * HEIGHT;
+  
+      const dist = Math.hypot(x - tx, y - ty);
+  
+      const pinching = dist < 40;
+  
+
+  
+      const { absX, absY } = getAbsolute(x, y);
+  
+
+  
+      if (pinching) {
+  
+        if (isHovering(absX, absY, resetBtn)) {
+  
+          drawCtx.clearRect(0, 0, WIDTH, HEIGHT);
+  
+          lastX = lastY = null;
+  
+          return;
+  
+        }
+  
+        if (isHovering(absX, absY, penBtn)) {
+  
+          tool = 'pen'; activate(penBtn);
+  
+          lastX = lastY = null;
+  
+          return;
+  
+        }
+  
+        if (isHovering(absX, absY, eraserBtn)) {
+  
+          tool = 'eraser'; activate(eraserBtn);
+  
+          lastX = lastY = null;
+  
+          return;
+  
+        }
+  
+        if (isHovering(absX, absY, colorBtn)) {
+  
+          colorIndex = (colorIndex + 1) % colors.length;
+  
+          currentColor = colors[colorIndex];
+  
+          colorDot.style.background = currentColor;
+  
+          activate(colorBtn);
+  
+          tool = 'pen';
+  
+          lastX = lastY = null;
+  
+          return;
+  
+        }
+  
+
+  
+        if (lastX !== null) {
+  
+          drawCtx.beginPath();
+  
+          drawCtx.moveTo(lastX, lastY);
+  
+          drawCtx.lineTo(x, y);
+  
+          drawCtx.strokeStyle = tool === 'eraser' ? 'black' : currentColor;
+  
+          drawCtx.lineWidth = brushSize;
+  
+          drawCtx.lineCap = 'round';
+  
+          drawCtx.stroke();
+  
+        }
+  
+
+  
+        lastX = x; lastY = y;
+  
+      } else {
+  
+        lastX = lastY = null;
+  
+      }
+  
+    });
+  
+
+  
+    const camera = new Camera(video, {
+  
+      onFrame: async () => await hands.send({ image: video }),
+  
+      width: WIDTH,
+  
+      height: HEIGHT
+  
+    });
+  
+    camera.start();
+  
+  </script>
+  
 </body>
+  
 </html>
